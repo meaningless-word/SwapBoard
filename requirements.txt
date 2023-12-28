@@ -1,0 +1,4 @@
+django
+django-filter
+django-ckeditor
+python-dotenv

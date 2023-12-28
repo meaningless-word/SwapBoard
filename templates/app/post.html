@@ -1,0 +1,59 @@
+{% extends 'default.html' %}
+
+{% block title %}
+Post
+{% endblock title %}
+
+{% block content %}
+<div>
+    <h1>{{ post.title }}</h1>
+    <h4>Дата публикации: {{ post.dateCreation|date:'d.m.Y H:i' }}</h4>
+    {% if post %}
+        <p>
+            {{post.content|safe}}
+        </p>
+        {% if user.username == post.linkedAuthor.user.username %}
+            <ul>
+                <li><a href="{% url 'post_update' pk=post.id %}">Редактировать</a></li>
+                <li><a href="{% url 'post_delete' pk=post.id %}">Удалить</a></li>
+            </ul>
+        {% endif %}
+        <hr>
+        <h3>Комментарии:</h3>
+        {% if comments %}
+            {% for c in comments %}
+                <div>
+                    <strong>{{ c.linkedUser.username }}</strong>&nbsp;{{ c.dateCreation|date:'d.m.Y H:i' }}
+                    <div>
+                        {{ c.commentText }}
+                    </div>
+                    <div>
+                        <a href="{% url 'comment_create' %}?pk={{ c.id }}">комментировать</a>
+                        {% if user.username == post.linkedAuthor.user.username %}
+                            <a href="{% url 'comment_update' pk=c.id %}">редактировать</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Пока нет, стань первым...</p>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Добавить комментарий" />
+            </form>
+        {% else %}
+            <p>чтобы оставить комментарий, <a href="{% url 'login' %}">авторизуйтесь</a></p>
+        {% endif %}
+    {% else %}
+        <p>потерялась...</p>
+    {% endif %}
+
+
+
+</div>
+
+{% endblock content %}

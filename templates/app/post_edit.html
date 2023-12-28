@@ -1,0 +1,14 @@
+{% extends 'default.html' %}
+
+{% block title %}
+Post Editor
+{% endblock title %}
+
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.media }}
+    {{ form.as_p }}
+    <input type="submit" value="Опубликовать"/>
+</form>
+{% endblock content %}

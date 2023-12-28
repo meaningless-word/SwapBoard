@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+    <title>{% block title %}{% endblock title %}</title>
+</head>
+<body>
+    <aside>
+         <ul>
+             <li><a href="{% url 'home' %}">Главная</a></li>
+             {% if user.is_authenticated %}
+                <li><a href="{% url 'post_create' %}">Добавить объявление</a></li>
+                <li><a href="{% url 'logout' %}">Выход</a></li>
+             {% else %}
+                <li><a href="{% url 'login' %}">Вход</a></li>
+                <li><a href="{% url 'signup' %}">Регистрация</a></li>
+             {% endif %}
+
+         </ul>
+    </aside>
+    <main>
+        {% block content %}
+        {% endblock content %}
+    </main>
+</body>
+</html>

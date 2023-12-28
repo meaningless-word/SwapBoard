@@ -1,0 +1,7 @@
+venv/
+.idea/
+cache_files
+.env
+*.bak
+*.log
+

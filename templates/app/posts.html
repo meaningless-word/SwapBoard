@@ -1,0 +1,62 @@
+{% extends 'default.html' %}
+
+{% load own_tags %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+{% block content %}
+<h1>Объявления</h1>
+    <div>
+        <form action="" method="get">
+            {{ filterset.form.as_p }}
+            <input type="submit" value="Отобразить" />
+        </form>
+    </div>
+    {% if posts %}
+        <table>
+           <tr>
+               <th> <h3>Название</h3> </th>
+               <th> <h3>Дата публикации статьи</h3> </th>
+               <th> <h3>Описание</h3> </th>
+               <th> <h3>Рейтинг</h3> </th>
+           </tr>
+
+           {% for p in posts %}
+           <tr>
+               <td><p><a href="{{ p.pk }}"><li>{{ p.title }}</li></a></p></td>
+               <td><p>{{ p.dateCreation|date:'d.m.Y H:i' }}</p></td>
+               <td><a>{{ p.content|safe|truncatewords:10 }}</a></td>
+               <td><p>{{ p.rating}}</p></td>
+           </tr>
+           {% endfor %}
+        </table>
+   {% else %}
+       <h2> "Объявлений нет!" </h2>
+   {% endif %}
+
+
+{% if page_obj.has_previous %}
+    <a href="?{% url_replace page=1 %}">1</a>
+    {% if page_obj.previous_page_number > 2 %}
+        ...
+    {% endif %}
+    {% if page_obj.previous_page_number > 1 %}
+        <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+    {% endif %}
+{% endif %}
+
+{{ page_obj.number }}
+
+{% if page_obj.has_next %}
+    {% if page_obj.next_page_number < page_obj.paginator.num_pages %}
+        <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+    {% endif %}
+    {% if page_obj.next_page_number < page_obj.paginator.num_pages|add:-1 %}
+        ...
+    {% endif %}
+    <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+{% endif %}
+
+{% endblock content %}
