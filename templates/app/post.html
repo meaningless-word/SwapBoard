@@ -12,7 +12,7 @@ Post
         <p>
             {{post.content|safe}}
         </p>
-        {% if user.username == post.linkedAuthor.user.username %}
+        {% if user == post.linkedAuthor.user %}
             <ul>
                 <li><a href="{% url 'post_update' pk=post.id %}">Редактировать</a></li>
                 <li><a href="{% url 'post_delete' pk=post.id %}">Удалить</a></li>
@@ -29,7 +29,7 @@ Post
                     </div>
                     <div>
                         <a href="{% url 'comment_create' %}?pk={{ c.id }}">комментировать</a>
-                        {% if user.username == post.linkedAuthor.user.username %}
+                        {% if user == post.linkedAuthor.user or user == c.linkedUser %}
                             <a href="{% url 'comment_update' pk=c.id %}">редактировать</a>
                         {% endif %}
                     </div>
@@ -51,7 +51,6 @@ Post
     {% else %}
         <p>потерялась...</p>
     {% endif %}
-
 
 
 </div>

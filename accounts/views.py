@@ -60,6 +60,7 @@ class UserConfirmEmailView(View):
 
         if user is not None and default_token_generator.check_token(user, token):
             user.is_active = True
+            user.is_stuff = True
             user.save()
             login(request, user)
             return redirect('email_confirmed')
