@@ -10,5 +10,5 @@ urlpatterns = [
     path('email-confirmed/', EmailConfirmedView.as_view(), name='email_confirmed'),
     path('email-confirmation-failed/', EmailConfirmationFailedView.as_view(), name='email_confirmation_failed'),
     path('login/', LoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(next_page=reverse_lazy('home')), name='logout'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]

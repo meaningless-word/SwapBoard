@@ -1,7 +1,6 @@
 from django.contrib import auth
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import F, CharField, Value, Max
-from django.db.models.functions import Cast, Concat
+from django.db.models import Max
 from django.shortcuts import render
 from django.urls import reverse_lazy, reverse
 from django.views.generic import (ListView, DetailView, CreateView, UpdateView, DeleteView, )
