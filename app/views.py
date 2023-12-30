@@ -114,3 +114,21 @@ class CommentUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('post', kwargs={'pk': Comment.objects.get(id=self.kwargs['pk']).linkedPost.id})
+
+
+class PrivateListView(LoginRequiredMixin, ListView):
+    model = Post
+    template_name = 'app/private.html'
+    context_object_name = 'posts'
+    ordering = ['-dateCreation']
+    paginate_by = 15
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(linkedAuthor__user_id=self.request.user.id).order_by('-dateCreation')
+        self.filterset = PostFilter(self.request.GET, queryset)
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filterset'] = self.filterset
+        return context

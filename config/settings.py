@@ -157,6 +157,7 @@ CKEDITOR_UPLOAD_PATH = 'uploads/'
 
 # Переход после авторизации
 LOGIN_REDIRECT_URL = "/app"
+LOGOUT_URL = 'http://127.0.0.1:8000/app/'
 
 
 # Константы для рассылки сообщений

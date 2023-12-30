@@ -7,7 +7,7 @@ Posts
 {% endblock title %}
 
 {% block content %}
-<h1>Объявления</h1>
+<h1>Мои объявления</h1>
     <div>
         <form action="" method="get">
             {{ filterset.form.as_p }}
@@ -17,18 +17,18 @@ Posts
     {% if posts %}
         <table>
            <tr>
-               <th> <h3>Название</h3> </th>
-               <th> <h3>Дата публикации статьи</h3> </th>
-               <th> <h3>Описание</h3> </th>
-               <th> <h3>Рейтинг</h3> </th>
+               <th><h3>Название</h3></th>
+               <th><h3>Дата публикации статьи</h3></th>
+               <th><h3>Рейтинг</h3></th>
+               <th><h3>Количество комментариев</h3></th>
            </tr>
 
            {% for p in posts %}
            <tr>
-               <td><p><a href="{{ p.pk }}"><li>{{ p.title }}</li></a></p></td>
+               <td><p><a href="{% url 'post' p.pk %}"><li>{{ p.title }}</li></a></p></td>
                <td><p>{{ p.dateCreation|date:'d.m.Y H:i' }}</p></td>
-               <td><p>{{ p.content|safe|truncatewords:10 }}</p><hr><p>{{ p.linkedAuthor.user.username }}</p></td>
-               <td><p>{{ p.rating}}</p></td>
+               <td><p>{{ p.rating }}</p></td>
+               <td><p>{{ p.linkedComments.count }}</p></td>
            </tr>
            {% endfor %}
         </table>

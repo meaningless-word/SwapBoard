@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
@@ -90,3 +91,7 @@ class LoginView(View):
     template_name = 'registration/login.html'
 
 
+@login_required(login_url='/accounts/login/')
+def logout_view(request):
+    logout(request)
+    return redirect('/app/')

@@ -1,7 +1,7 @@
 from django.contrib.auth.views import LogoutView
 from django.urls import path, reverse_lazy
 from .views import SignUp, EmailConfirmationSentView, UserConfirmEmailView, EmailConfirmedView, \
-    EmailConfirmationFailedView, LoginView
+    EmailConfirmationFailedView, LoginView, logout_view
 
 urlpatterns = [
     path('signup/', SignUp.as_view(), name='signup'),
@@ -10,5 +10,4 @@ urlpatterns = [
     path('email-confirmed/', EmailConfirmedView.as_view(), name='email_confirmed'),
     path('email-confirmation-failed/', EmailConfirmationFailedView.as_view(), name='email_confirmation_failed'),
     path('login/', LoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
 ]
