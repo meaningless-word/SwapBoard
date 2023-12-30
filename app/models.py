@@ -52,15 +52,6 @@ class Post(models.Model):
     title = models.CharField(max_length=50, unique=True, verbose_name="Заголовок")
     content = RichTextUploadingField(verbose_name="Сообщение")
     dateCreation = models.DateTimeField(auto_now_add=True)
-    rating = models.SmallIntegerField(default=0)
-
-    def like(self):
-        self.rating += 1
-        self.save()
-
-    def dislike(self):
-        self.rating -= 1
-        self.save()
 
     def __str__(self):
         return f'{self.title[0:40]} ... [{str(self.rating)}]'
@@ -73,10 +64,12 @@ class Comment(models.Model):
     linkedPost = models.ForeignKey(Post, on_delete=models.CASCADE, blank=True, null=True, related_name='linkedComments')
     linkedUser = models.ForeignKey(User, on_delete=models.CASCADE)
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True, related_name="commented")
+    acceptedBy = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="accepted")
 
     commentText = models.TextField()
     dateCreation = models.DateTimeField(auto_now_add=True)
     familyTree = models.CharField(max_length=500, blank=True, null=True)
+    is_deleted = models.BooleanField(null=False, default=False)
 
     def __str__(self):
         return f'{self.commentText[:40]}'

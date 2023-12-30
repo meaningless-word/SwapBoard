@@ -1,4 +1,5 @@
 from django.contrib import auth
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Max
 from django.shortcuts import render
@@ -16,7 +17,7 @@ class PostListView(ListView):
     template_name = 'app/posts.html'
     context_object_name = 'posts'
     ordering = ['-dateCreation']
-    paginate_by = 6
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -34,6 +35,7 @@ class PostDetailView(DetailView):
     form_class = CommentForm
     model = Post
     context_object_name = 'post'
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -132,3 +134,47 @@ class PrivateListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
         return context
+
+
+class PrivateDetailView(LoginRequiredMixin, DetailView):
+    template_name = 'app/private_post.html'
+    model = Post
+    context_object_name = 'post'
+    paginate_by = 15
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = (
+            Comment.objects
+            .filter(linkedPost__id=self.kwargs['pk'])
+            .order_by('familyTree')
+        )
+        return context
+
+
+@login_required
+def private_delete_comment_view(request, **kwargs):
+    c = Comment.objects.get(id=kwargs['pk'])
+    c.is_deleted = True
+    c.save()
+    context = {
+        'object': Post.objects.get(id=c.linkedPost.id),
+        'post': Post.objects.get(id=c.linkedPost.id),
+        'view': PrivateDetailView,
+        'comments': Comment.objects.filter(linkedPost=c.linkedPost).order_by('familyTree'),
+    }
+    return render(request, 'app/private_post.html', context=context)
+
+
+@login_required
+def private_accept_comment_view(request, **kwargs):
+    c = Comment.objects.get(id=kwargs['pk'])
+    c.acceptedBy = request.user
+    c.save()
+    context = {
+        'object': Post.objects.get(id=c.linkedPost.id),
+        'post': Post.objects.get(id=c.linkedPost.id),
+        'view': PrivateDetailView,
+        'comments': Comment.objects.filter(linkedPost=c.linkedPost).order_by('familyTree'),
+    }
+    return render(request, 'app/private_post.html', context=context)
