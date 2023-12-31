@@ -73,3 +73,11 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.commentText[:40]}'
+
+    def get_offset(self):
+        x = len(str(self.familyTree).split("-")) - 2
+        return 5 if x > 5 else x
+
+    def get_col(self):
+        return 12 - self.get_offset()
+

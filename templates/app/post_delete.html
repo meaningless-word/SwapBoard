@@ -7,6 +7,6 @@
     {% csrf_token %}
     <p>{{ object.title }}</p>
     <h4>является окончательным решением?</h4>
-    <input type="submit" value="Да"/>
+    <button class="btn btn-danger" type="submit">Да</button>
 </form>
 {% endblock content %}

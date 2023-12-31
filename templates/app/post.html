@@ -5,54 +5,70 @@ Post
 {% endblock title %}
 
 {% block content %}
-<div>
-    <h1>{{ post.title }}</h1>
-    <h4>Дата публикации: {{ post.dateCreation|date:'d.m.Y H:i' }}</h4>
-    {% if post %}
-        <p>
-            {{post.content|safe}}
-        </p>
-        {% if user == post.linkedAuthor.user %}
-            <ul>
-                <li><a href="{% url 'post_update' pk=post.id %}">Редактировать</a></li>
-                <li><a href="{% url 'post_delete' pk=post.id %}">Удалить</a></li>
-            </ul>
-        {% endif %}
-        <hr>
-        <h3>Комментарии:</h3>
-        {% if comments %}
-            {% for c in comments %}
-                <div>
-                    <strong>{{ c.linkedUser.username }}</strong>&nbsp;{{ c.dateCreation|date:'d.m.Y H:i' }}
-                    <div>
-                        {{ c.commentText }}
-                    </div>
-                    <div>
-                        <a href="{% url 'comment_create' %}?pk={{ c.id }}">комментировать</a>
-                        {% if user == post.linkedAuthor.user or user == c.linkedUser %}
-                            <a href="{% url 'comment_update' pk=c.id %}">редактировать</a>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endfor %}
+    <div class="card">
+        {% if post %}
+            <div class="card-header">
+                <h1>{{ post.title }}</h1>
+                <h6>Дата публикации: {{ post.dateCreation|date:'d.m.Y H:i' }}</h6>
+            </div>
+            <div class="card-body">
+                {{post.content|safe}}
+                {% if user == post.linkedAuthor.user %}
+                    <ul class="list-group list-group-horizontal">
+                        <li class="list-group-item list-group-item-primary"><a href="{% url 'post_update' pk=post.id %}">Редактировать</a></li>
+                        <li class="list-group-item list-group-item-danger"><a href="{% url 'post_delete' pk=post.id %}">Удалить</a></li>
+                    </ul>
+                {% endif %}
+            </div>
+
+            <h3>Комментарии:</h3>
+            <div class="container">
+                {% if comments %}
+                    {% for c in comments %}
+                        <div class="row">
+                            <div class="col-lg-{{ c.get_col }} offset-lg-{{ c.get_offset }}">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <b>{{ c.linkedUser.username }}</b>&nbsp;{{ c.dateCreation|date:'d.m.Y H:i' }}
+                                    </div>
+                                    {% if not c.is_deleted %}
+                                        <div class="panel-body">
+                                            {{ c.commentText }}
+                                        </div>
+                                        <div class="panel-footer">
+                                            <a class="btn btn-outline-primary" href="{% url 'comment_create' %}?pk={{ c.id }}">комментировать</a>
+                                            {% if user == post.linkedAuthor.user or user == c.linkedUser %}
+                                                <a class="btn btn-outline-primary" href="{% url 'comment_update' pk=c.id %}">редактировать</a>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <div class="panel-body">
+                                            ...комментарий удалён...
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Пока нет, стань первым...</p>
+                {% endif %}
+            </div>
+            <div class="container">
+                {% if user.is_authenticated %}
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ form.as_p }}
+                            <button type="submit" class="save btn btn-success">Добавить комментарий</button>
+                        </div>
+                    </form>
+                {% else %}
+                    <p>чтобы оставить комментарий, <a href="{% url 'login' %}">авторизуйтесь</a></p>
+                {% endif %}
+            </div>
         {% else %}
-            <p>Пока нет, стань первым...</p>
+            <p>потерялась...</p>
         {% endif %}
-
-        {% if user.is_authenticated %}
-            <form action="" method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <input type="submit" value="Добавить комментарий" />
-            </form>
-        {% else %}
-            <p>чтобы оставить комментарий, <a href="{% url 'login' %}">авторизуйтесь</a></p>
-        {% endif %}
-    {% else %}
-        <p>потерялась...</p>
-    {% endif %}
-
-
-</div>
-
+    </div>
 {% endblock content %}

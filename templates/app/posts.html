@@ -10,12 +10,14 @@ Posts
 <h1>Объявления</h1>
     <div>
         <form action="" method="get">
+            <div class="form-group">
             {{ filterset.form.as_p }}
-            <input type="submit" value="Отобразить" />
+            </div>
+            <button type="submit" value="Отобразить" />
         </form>
     </div>
     {% if posts %}
-        <table>
+        <table class="table table-bordered table-hover">
            <tr>
                <th><h3>Название</h3></th>
                <th><h3>Дата публикации статьи</h3></th>

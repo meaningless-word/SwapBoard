@@ -5,52 +5,61 @@ Private Post
 {% endblock title %}
 
 {% block content %}
-<div>
-    <h1>{{ post.title }}</h1>
-    <h4>Дата публикации: {{ post.dateCreation|date:'d.m.Y H:i' }}</h4>
-    {% if post %}
-        <p>
-            {{post.content|safe}}
-        </p>
-        {% if user == post.linkedAuthor.user %}
-            <ul>
-                <li><a href="{% url 'post_update' pk=post.id %}">Редактировать</a></li>
-                <li><a href="{% url 'post_delete' pk=post.id %}">Удалить</a></li>
-            </ul>
-        {% endif %}
-        <hr>
-        <h3>Комментарии:</h3>
-        {% if comments %}
-            {% for c in comments %}
-                <div>
-                    <strong>{{ c.linkedUser.username }}</strong>&nbsp;{{ c.dateCreation|date:'d.m.Y H:i' }}
-                    {% if not c.is_deleted %}
-                        <div>
-                            {{ c.commentText }}
-                            <div>
-                                {% if c.acceptedBy == null %}
-                                    {% if user != c.linkedUser %}
-                                        <a href="{% url 'comment_accept' pk=c.id %}?pk={{ c.id }}">принять</a>
+    <div class="card">
+        {% if post %}
+            <div class="card-header">
+                <h1>{{ post.title }}</h1>
+                <h4>Дата публикации: {{ post.dateCreation|date:'d.m.Y H:i' }}</h4>
+            </div>
+            <div class="card-body">
+                {{post.content|safe}}
+                {% if user == post.linkedAuthor.user %}
+                    <ul class="list-group list-group-horizontal">
+                        <li class="list-group-item list-group-item-primary"><a href="{% url 'post_update' pk=post.id %}">Редактировать</a></li>
+                        <li class="list-group-item list-group-item-danger"><a href="{% url 'post_delete' pk=post.id %}">Удалить</a></li>
+                    </ul>
+                {% endif %}
+            </div>
+
+            <h3>Комментарии:</h3>
+            <div class="container">
+                {% if comments %}
+                    {% for c in comments %}
+                        <div class="row">
+                            <div class="col-lg-{{ c.get_col }} offset-lg-{{ c.get_offset }}">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <b>{{ c.linkedUser.username }}</b>&nbsp;{{ c.dateCreation|date:'d.m.Y H:i' }}
+                                    </div>
+                                    {% if not c.is_deleted %}
+                                        <div class="panel-body">
+                                            {{ c.commentText }}
+                                        </div>
+                                        <div class="panel-footer">
+                                            {% if c.acceptedBy == null %}
+                                                {% if user != c.linkedUser %}
+                                                    <a class="btn btn-outline-success" href="{% url 'comment_accept' pk=c.id %}?pk={{ c.id }}">принять</a>
+                                                {% endif %}
+                                                {% if user == post.linkedAuthor.user %}
+                                                    <a class="btn btn-outline-danger" href="{% url 'comment_delete' pk=c.id %}">удалить</a>
+                                                {% endif %}
+                                            {% else %}
+                                                <i>комментарий принят</i>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <div class="panel-body">
+                                            ...комментарий удалён...
+                                        </div>
                                     {% endif %}
-                                    {% if user == post.linkedAuthor.user %}
-                                        <a href="{% url 'comment_delete' pk=c.id %}">удалить</a>
-                                    {% endif %}
-                                {% else %}
-                                    <i>комментарий принят</i>
-                                {% endif %}
+                                </div>
                             </div>
                         </div>
-                    {% else %}
-                        <div>
-                            ...комментарий удалён...
-                        </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% else %}
+            <p>потерялась...</p>
         {% endif %}
-    {% else %}
-        <p>потерялась...</p>
-    {% endif %}
-</div>
-
+    </div>
 {% endblock content %}

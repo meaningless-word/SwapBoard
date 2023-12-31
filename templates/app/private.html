@@ -10,12 +10,14 @@ Private Posts
 <h1>Мои объявления</h1>
     <div>
         <form action="" method="get">
-            {{ filterset.form.as_p }}
-            <input type="submit" value="Отобразить" />
+            <div class="form-group">
+                {{ filterset.form.as_p }}
+                <button class="btn btn-success" type="submit" />Отобразить</button>
+            </div>
         </form>
     </div>
     {% if posts %}
-        <table>
+        <table class="table table-bordered table-hover">
            <tr>
                <th><h3>Название</h3></th>
                <th><h3>Дата публикации статьи</h3></th>
